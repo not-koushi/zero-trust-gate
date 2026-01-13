@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
+const { totalRequests, expiredTokenRejections } = require("../metrics");
 
 module.exports = async function authCheck(request, reply) {
+  totalRequests.inc();
+
   const authHeader = request.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -18,6 +21,7 @@ module.exports = async function authCheck(request, reply) {
 
     const now = Math.floor(Date.now() / 1000);
     if (decoded.exp < now) {
+      expiredTokenRejections.inc();
       return reply.code(401).send({ error: "Token expired" });
     }
 
