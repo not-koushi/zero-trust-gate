@@ -1,7 +1,15 @@
 const fastify = require("fastify")({ logger: true });
+const authCheck = require("./middleware/authCheck");
+const authorize = require("./middleware/authorize");
 
-fastify.get("/health", async () => {
-  return { status: "ok" };
+fastify.addHook("preHandler", authCheck);
+fastify.addHook("preHandler", authorize);
+
+fastify.get("/protected", async (request) => {
+  return {
+    message: "Access granted",
+    role: request.userRole
+  };
 });
 
 const start = async () => {
