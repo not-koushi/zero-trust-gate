@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, HTTPException
 from app.jwt_utils import create_token, verify_token
+from app.models import VerifyRequest
 
 router = APIRouter()
 
@@ -24,19 +25,12 @@ async def login(request: Request):
     }
 
 @router.post("/verify")
-async def verify(body: dict):
-    token = body.get("token")
-
-    if not token:
-        raise HTTPException(status_code=400, detail="Token missing")
-
+async def verify(data: VerifyRequest):
     try:
-        payload = verify_token(token)
+        payload = verify_token(data.token)
         return {
             "allowed": True,
             "role": payload.get("role")
         }
-    except Exception:
-        return {
-            "allowed": False
-        }
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
