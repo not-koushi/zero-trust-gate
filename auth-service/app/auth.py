@@ -1,23 +1,20 @@
 from fastapi import APIRouter, Request, HTTPException
 from app.jwt_utils import create_token, verify_token
-from app.models import VerifyRequest
+from app.models import LoginRequest, VerifyRequest
 
 router = APIRouter()
 
 @router.post("/login")
-async def login(request: Request):
-    body = await request.json()
-
-    user_id = body.get("user_id")
-    role = body.get("role")
-
-    if not user_id or not role:
-        raise HTTPException(status_code=400, detail="Invalid credentials")
-
+async def login(data: LoginRequest, request: Request):
     ip = request.client.host
     user_agent = request.headers.get("user-agent", "")
 
-    token = create_token(user_id, role, ip, user_agent)
+    token = create_token(
+        user_id=data.user_id,
+        role=data.role,
+        ip=ip,
+        user_agent=user_agent
+    )
 
     return {
         "access_token": token,
