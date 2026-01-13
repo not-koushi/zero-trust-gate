@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+
+# Node.js
+node_modules/
+
+# OS / Editor noise
+.DS_Store
+Thumbs.db
+.vscode/
