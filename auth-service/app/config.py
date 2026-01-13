@@ -1,0 +1,5 @@
+from datetime import timedelta
+
+JWT_SECRET = "CHANGE_ME_IN_PROD"
+JWT_ALGORITHM = "HS256"
+JWT_EXP_MINUTES = 15
