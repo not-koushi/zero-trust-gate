@@ -2,6 +2,13 @@ const fastify = require("fastify")({ logger: true });
 const authCheck = require("./middleware/authCheck");
 const authorize = require("./middleware/authorize");
 const contextCheck = require("./middleware/contextCheck");
+const cors = require("@fastify/cors");
+
+fastify.register(cors, {
+  origin: "http://127.0.0.1:8000",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Authorization", "Content-Type"], 
+});
 
 fastify.addHook("preHandler", authCheck);
 fastify.addHook("preHandler", authorize);
