@@ -1,9 +1,11 @@
 const fastify = require("fastify")({ logger: true });
 const authCheck = require("./middleware/authCheck");
 const authorize = require("./middleware/authorize");
+const contextCheck = require("./middleware/contextCheck");
 
 fastify.addHook("preHandler", authCheck);
 fastify.addHook("preHandler", authorize);
+fastify.addHook("preHandler", contextCheck);
 
 fastify.get("/protected", async (request) => {
   return {
