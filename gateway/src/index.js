@@ -4,7 +4,7 @@ const cors = require("@fastify/cors");
 const authCheck = require("./middleware/authCheck");
 const authorize = require("./middleware/authorize");
 const contextCheck = require("./middleware/contextCheck");
-const { client } = require("./metrics");
+const { register } = require("./metrics");
 
 fastify.register(cors, {
   origin: "http://127.0.0.1:8000",
@@ -13,8 +13,8 @@ fastify.register(cors, {
 });
 
 fastify.get("/metrics", async (_request, reply) => {
-  reply.header("Content-Type", client.register.contentType);
-  return client.register.metrics();
+  reply.header("Content-Type", register.contentType);
+  return register.metrics();
 });
 
 fastify.register(async function (protectedRoutes) {
