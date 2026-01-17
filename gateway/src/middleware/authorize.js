@@ -1,21 +1,19 @@
-const axios = require("axios");
-const { AUTH_SERVICE_URL } = require("../config");
-const { authFailures } = require("../metrics");
-
 module.exports = async function authorize(request, reply) {
-  try {
-    const response = await axios.post(AUTH_SERVICE_URL, {
-      token: request.token
-    });
+  const tokenPayload = request.tokenPayload;
 
-    if (!response.data.allowed) {
-      authFailures.inc();
-      return reply.code(403).send({ error: "Access denied" });
+  // Safety check (should never happen if authCheck works)
+  if (!tokenPayload || !tokenPayload.role) {
+    return reply
+      .code(403)
+      .send({ error: "Authorization failed" });
+  }
+
+  // Allow access to /protected for user role
+  if (request.routerPath === "/protected") {
+    if (tokenPayload.role !== "user") {
+      return reply
+        .code(403)
+        .send({ error: "Authorization failed" });
     }
-
-    request.userRole = response.data.role;
-  } catch (err) {
-    authFailures.inc();
-    return reply.code(403).send({ error: "Authorization failed" });
   }
 };
