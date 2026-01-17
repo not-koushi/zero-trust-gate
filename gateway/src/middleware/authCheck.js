@@ -12,7 +12,6 @@ module.exports = async function authCheck(request, reply) {
 
   // ❌ Missing or malformed Authorization header
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    console.log("auth failure: missing header");
     authFailures.inc();
     return reply
       .code(401)
