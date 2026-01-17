@@ -1,4 +1,7 @@
-const fastify = require("fastify")({ logger: true });
+const fastify = require("fastify")({
+  logger: true,
+  trustProxy: true
+})
 const cors = require("@fastify/cors");
 
 const authCheck = require("./middleware/authCheck");
