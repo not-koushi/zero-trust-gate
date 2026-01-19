@@ -1,89 +1,116 @@
-# ZeroTrustGate
+# 🔐 ZeroTrustGate  
+**A Context-Aware Zero Trust API Gateway with Observability**
 
-A Zero Trust API Gateway that enforces continuous authentication and authorization
-for every request, even after login.
+ZeroTrustGate is a production-style Zero Trust gateway that enforces **per-request authentication, authorization, and context validation**, while providing **real-time security observability** through Prometheus and Grafana.
 
-## Architecture Overview
-
-ZeroTrustGate follows a strict Zero Trust model:
-- No request is trusted by default
-- Every request is verified at the gateway
-- Authorization is delegated to a dedicated Auth Service
-- Metrics are collected for observability
-
-### Components
-
-- **API Gateway (Node.js)**
-  - Entry point for all requests
-  - Performs token presence and freshness checks
-  - Enforces context validation
-  - Exposes Prometheus metrics
-
-- **Auth Service (FastAPI)**
-  - Issues JWTs
-  - Verifies JWT signatures and claims
-  - Applies role-based access policies
-
-- **Frontend (Next.js)**
-  - Demonstrates login
-  - Displays security metrics
-
-- **Monitoring (Prometheus)**
-  - Scrapes gateway metrics
-  - Tracks authentication failures
-
-## Trust Model
-
-No internal service trusts another service blindly.
-Every decision is explicit and verifiable.
+The project demonstrates how Zero Trust principles work **in practice**, including token replay protection, context binding, and measurable security signals — all orchestrated with Docker Compose.
 
 ---
 
-## 🔐 Authentication Flow (Current)
-1. A client authenticates via the Auth Service and receives a signed JWT.
-2. All client requests pass through the API Gateway.
-3. The API Gateway:
-- Requires a JWT on every request
-- Rejects expired or malformed tokens
-4. The API Gateway delegates authorization to the Auth Service.
-5. Access is granted only if all checks pass.
+## 🚀 Key Features
 
-##🧱 Components Implemented
-#### 🟦 Auth Service (FastAPI)
-- Issues JWTs with a fixed, documented structure
-- Verifies JWT signatures and required claims
-- Decides allow/deny for each request
-- Exposes OpenAPI/Swagger documentation
+### 🔒 Zero Trust Enforcement
+- No implicit trust after authentication
+- Every request must present a valid JWT
+- Role-based authorization at the gateway
+- Explicit failure paths (401 / 403)
 
-#### 🟩 API Gateway (Node.js + Fastify)
-- Acts as the single entry point
-- Enforces token presence
-- Enforces token expiration
-- Delegates authorization decisions
-- Does not trust token payloads blindly
+### 🧠 Context-Aware Security
+- JWTs are bound to **User-Agent context**
+- Token replay attempts from different clients are blocked
+- Designed to work correctly in containerized / proxy environments
 
-#### 📜 JWT Claims (Enforced)
+### 📊 Security Observability
+- Prometheus metrics exposed via `/metrics`
+- Accurate counters for:
+  - Total gateway requests
+  - Authentication failures
+  - Expired token rejections
+- Grafana dashboards for real-time visibility
 
-Each token includes:
-- `sub` — user identifier
-- `role` — authorization role
-- `iat` — issued-at timestamp
-- `exp` — expiration timestamp
-- `ip_hash` — hashed client IP
-- `ua_hash` — hashed User-Agent
-Token lifetime is fixed to 15 minutes.
+### 🐳 Infrastructure-Ready
+- Dockerfiles for all services
+- Docker Compose orchestration
+- Persistent volumes for Prometheus and Grafana
+- One-command startup and shutdown
 
+---
 
-## 🚫 What Is Intentionally Not Implemented Yet
-To maintain clarity and scope discipline, the following are deliberately deferred:
-- IP / User-Agent context verification
-- - Metrics and observability 
-- Frontend dashboard (later phase)
-This ensures each security layer is added intentionally and correctly.
+## 🧱 Architecture Overview
 
+```
+Browser / Client
+       |
+       v
++-------------------+
+|   Auth Service    |  (FastAPI)
+|  Issues JWTs      |
++-------------------+
+       |
+       v
++-------------------+
+|  API Gateway      |  (Node.js / Fastify)
+|  - Auth Check     |
+|  - Authorization  |
+|  - Context Check  |
++-------------------+
+       |
+       v
++-------------------+
+| Protected APIs    |
++-------------------+
 
-## 🏁 Current Status
-- Zero Trust authentication flow: Implemented
-- Service-to-service contracts: Locked
-- Token misuse and expiration: Handled
-- System ready for hardening: Yes
+Gateway Metrics → Prometheus → Grafana
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-----|-----------|
+| Auth Service | Python, FastAPI |
+| API Gateway | Node.js, Fastify |
+| Frontend | Next.js (minimal demo client) |
+| Metrics | Prometheus |
+| Dashboards | Grafana |
+| Orchestration | Docker Compose |
+
+---
+
+## 📁 Repository Structure
+
+```
+zero-trust-gate/
+├── auth-service/
+├── gateway/
+├── frontend/
+├── prometheus/
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## ▶️ Running the Project
+
+```bash
+docker compose up --build
+```
+
+---
+
+## 📈 Project Status
+
+✔ Feature complete  
+✔ Demo ready  
+✔ Dockerized  
+✔ Observable  
+✔ Interview-defensible  
+
+---
+
+## 🧑‍💻 Author
+
+_**Koushik Panchadarla**_
+Built as a security-focused backend infrastructure project to demonstrate **Zero Trust principles in real systems**.
