@@ -113,4 +113,4 @@ docker compose up --build
 ## 🧑‍💻 Author
 
 _**Koushik Panchadarla**_
-Built as a security-focused backend infrastructure project to demonstrate **Zero Trust principles in real systems**.
+- Built as a security-focused backend infrastructure project to demonstrate **Zero Trust principles in real systems**.
